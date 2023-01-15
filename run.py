@@ -13,9 +13,9 @@ def main(stdscr):
     #  BLUE_AND_YELLOW = curses.color_pair(1)
     #  GREEN_AND_BLACK = curses.color_pair(2)
 
-    win = curses.newwin(8, 100, 2, 2)
+    win = curses.newwin(8, 10, 2, 2)
     box = Textbox(win)
-    rectangle(stdscr, 2, 2, 8, 100)
+    rectangle(stdscr, 2, 2, 8, 10)
     stdscr.refresh()
     box.edit()
     text = box.gather().strip().replace("\n", "")
