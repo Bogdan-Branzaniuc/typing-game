@@ -1,3 +1,8 @@
+import curses
+from curses import wrapper
+import os
+from curses.textpad import Textbox, rectangle
+
 def main(stdscr):
     width = os.get_terminal_size()[0]
     height = os.get_terminal_size()[1]
