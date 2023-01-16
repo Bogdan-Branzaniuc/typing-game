@@ -6,8 +6,6 @@ import colorama
 from colorama import Fore
 import sys
 from termcolor import colored, cprint
-import getpass
-import sys
 import getch
 import bcrypt
 
