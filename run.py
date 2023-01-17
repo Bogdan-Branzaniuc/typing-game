@@ -32,7 +32,6 @@ def is_not_existing_user(input_username):
     is_new_user = True
     for user in usernames:
         if input_username == user:
-            print(user)
             is_new_user = False        
     return is_new_user
     
@@ -68,9 +67,10 @@ def create_account():
         salt = bcrypt.gensalt()
         credentials = [username_input, f'{create_password(salt)}', f"{salt}"]
         users = SHEET.worksheet('users-database').append_row(credentials)
-        GEEN_MESSAGE = colored('succesfully registered', 'green', attrs=['reverse', 'blink'])
+        GREEN_MESSAGE = colored('succesfully registered', 'green', attrs=['reverse', 'blink'])
+        os.system('clear')
         print(GREEN_MESSAGE)
-        return True
+        main()        
         
     else:
         ERROR = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
@@ -88,29 +88,32 @@ def login_check_password(db_user_password, user_salt):
         ERROR = colored('wrong password', 'red', attrs=['reverse', 'blink'])
         print(ERROR)
         login_check_password(db_user_password, user_salt) #red-case recursive call to the same function.
-    return True
-
+        
     
 def login():
     """
     Gets called when logging into an existing account
     """   
     global GREEN_MESSAGE
+    global LOGGED_IN
     username_input = input('feed your username to me:\n')
+    
     if is_not_existing_user(username_input) == False:
         users = SHEET.worksheet('users-database')
         usernames = users.col_values(1)
         passwords = users.col_values(2)
         salts = users.col_values(3)
         user_credentials = [[username, password, salt] for username, password, salt in zip(usernames,passwords, salts) if username_input == username][0]  #make a zip method and retrieve credentials
-        print(user_credentials)
         print('type your password:')
         encoded_salt = user_credentials[2][2:-1].encode('utf-8')          
         login_check_password(user_credentials[1], encoded_salt)
         print('great Stuff you are now logged in') 
-        GREEN_MESSAGE = colored('Successfuly logged in', 'green', attrs=['reverse', 'blink'])   
+        GREEN_MESSAGE = colored('Successfuly logged in', 'green', attrs=['reverse', 'blink']) 
+        
+        os.system('clear')  
+        LOGGED_IN = True
         print(GREEN_MESSAGE)
-        return True
+        main()       
     else:
         ERROR = colored('this Username does not exist', 'red', attrs=['reverse', 'blink'])
         os.system('clear')
@@ -131,10 +134,9 @@ def auth():
     print('2. Register')
     user_auth_type = input('type one of the command numbers above in order to proceed \n')
     if user_auth_type == '2':
-         create_account()            
+        create_account()            
     elif user_auth_type == '1':
-        if login() == True:
-            LOGGED_IN = True
+        login()     
     else:
         ERROR = colored('please type in one of the two digit-options in the menu', 'red', attrs=['reverse', 'blink'])
         
