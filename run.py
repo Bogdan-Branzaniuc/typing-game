@@ -20,7 +20,7 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('project3-users')
 ERROR = ' '
-GEEN_MESSAGE = ' '
+GREEN_MESSAGE = ' '
 LOGGED_IN = False
 
 def is_not_existing_user(input_username):
