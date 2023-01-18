@@ -6,7 +6,8 @@ import colorama
 from colorama import Fore
 import sys
 from termcolor import colored, cprint
-import getch
+import getpass
+import pwinput
 import bcrypt
 
 
@@ -39,15 +40,8 @@ def is_not_existing_user(input_username):
 def create_password(salt):
     """
     Will return a hashed password 
-    """
-    password = ''
-    while True:
-        x = getch.getch()
-        if x == '\r' or x == '\n':
-            break
-        print('*', end='', flush=True)
-        password += x
-            
+    """  
+    password = pwinput.pwinput(prompt ="", mask="*")        
     encoded_psw = password.encode('utf-8')
     hashed = bcrypt.hashpw(encoded_psw, salt)
     print('salt: ',salt)
@@ -69,6 +63,7 @@ def create_account():
         users = SHEET.worksheet('users-database').append_row(credentials)
         GREEN_MESSAGE = colored('succesfully registered', 'green', attrs=['reverse', 'blink'])
         os.system('clear')
+        ERROR =''
         print(GREEN_MESSAGE)
         main()        
         
@@ -94,6 +89,7 @@ def login():
     """
     Gets called when logging into an existing account
     """   
+    global ERROR
     global GREEN_MESSAGE
     global LOGGED_IN
     username_input = input('feed your username to me:\n')
@@ -109,7 +105,7 @@ def login():
         login_check_password(user_credentials[1], encoded_salt)
         print('great Stuff you are now logged in') 
         GREEN_MESSAGE = colored('Successfuly logged in', 'green', attrs=['reverse', 'blink']) 
-        
+        ERROR =''
         os.system('clear')  
         LOGGED_IN = True
         print(GREEN_MESSAGE)
