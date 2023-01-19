@@ -8,6 +8,7 @@ from termcolor import colored, cprint
 import getpass
 import pwinput
 import bcrypt
+from game.py import game
 
 
 SCOPE = [
@@ -142,6 +143,8 @@ def game():
     will hold the typing game curses code
     """
     print("let's begin the fun")
+    wrapper(game.game_start)
+    game.code_to_type_map()
     
     
 def main():

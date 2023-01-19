@@ -22,19 +22,25 @@ class Game:
         """
         width = os.get_terminal_size()[0]
         height = os.get_terminal_size()[1]
-        curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
-        curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        BLUE_AND_YELLOW = curses.color_pair(1)
-        GREEN_AND_BLACK = curses.color_pair(2)
-
-        win = curses.newwin(height, width, 0, 0)
-        box = Textbox(win)
-        rectangle(stdscr, 2, 2, height-2, width-2)
-        stdscr.refresh()
-        box.edit()
-        text = box.gather().strip().replace("\n", "")
+       
+        
+        stdscr.refresh()        
         stdscr.addstr(5, 20, self.code_to_type)
         stdscr.getch()
 
+    def code_to_type_map(self):
+        with open(r"rocket_js_code.txt", 'r') as fp:
+            for count, line in enumerate(fp):
+                pass
+        print('Total Lines', count + 1)
+        
 game = Game('rocket_js_code.txt')       
 wrapper(game.game_start)
+game.code_to_type_map()
+
+
+##notes
+        # curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
+        # curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        # BLUE_AND_YELLOW = curses.color_pair(1)
+        # GREEN_AND_BLACK = curses.color_pair(2)
