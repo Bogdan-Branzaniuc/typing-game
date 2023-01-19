@@ -1,6 +1,5 @@
 import gspread 
 from google.oauth2.service_account import Credentials
-
 import os
 import colorama
 from colorama import Fore
@@ -20,8 +19,8 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('project3-users')
-ERROR = ' '
-GREEN_MESSAGE = ' '
+ERROR = ''
+GREEN_MESSAGE = ''
 LOGGED_IN = False
 
 def is_not_existing_user(input_username):
@@ -44,7 +43,6 @@ def create_password(salt):
     password = pwinput.pwinput(prompt ="", mask="*")        
     encoded_psw = password.encode('utf-8')
     hashed = bcrypt.hashpw(encoded_psw, salt)
-    print('salt: ',salt)
     return hashed
 
     
@@ -71,18 +69,18 @@ def create_account():
         ERROR = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
         os.system('clear')
         print(ERROR)
-        create_account() #red-case recursive call to the same function. 
+        create_account()  
 
         
 def login_check_password(db_user_password, user_salt):
     """
     Gets the user password and salt from the database and compares it to the user input for validation 
     """
-    user_input_password =  f'{create_password(user_salt)}'  # bring the salt into the game for pasword matching
+    user_input_password =  f'{create_password(user_salt)}'
     if user_input_password != db_user_password:
         ERROR = colored('wrong password', 'red', attrs=['reverse', 'blink'])
         print(ERROR)
-        login_check_password(db_user_password, user_salt) #red-case recursive call to the same function.
+        login_check_password(db_user_password, user_salt) 
         
     
 def login():
@@ -99,7 +97,7 @@ def login():
         usernames = users.col_values(1)
         passwords = users.col_values(2)
         salts = users.col_values(3)
-        user_credentials = [[username, password, salt] for username, password, salt in zip(usernames,passwords, salts) if username_input == username][0]  #make a zip method and retrieve credentials
+        user_credentials = [[username, password, salt] for username, password, salt in zip(usernames,passwords, salts) if username_input == username][0]  
         print('type your password:')
         encoded_salt = user_credentials[2][2:-1].encode('utf-8')          
         login_check_password(user_credentials[1], encoded_salt)
@@ -114,7 +112,7 @@ def login():
         ERROR = colored('this Username does not exist', 'red', attrs=['reverse', 'blink'])
         os.system('clear')
         print(ERROR)
-        login() #red-case recursive call to the same function. 
+        login() 
 
         
 def auth():
@@ -135,6 +133,8 @@ def auth():
         login()     
     else:
         ERROR = colored('please type in one of the two digit-options in the menu', 'red', attrs=['reverse', 'blink'])
+        os.system('clear')
+        auth()
         
         
 def game():
@@ -143,10 +143,12 @@ def game():
     """
     print("let's begin the fun")
     
+    
 def main():
     """
     Builds the app environment and calls all the functions and messages
     """
+    print(os.get_terminal_size()[0], os.get_terminal_size()[1])
     global LOGGED_IN
     if LOGGED_IN == False:
         print(ERROR)
