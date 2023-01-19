@@ -25,7 +25,7 @@ class Game:
        
         
         stdscr.refresh()        
-        stdscr.addstr(5, 20, self.code_to_type)
+        stdscr.addstr(1, 1, self.code_to_type)
         stdscr.getch()
 
     def code_to_type_map(self):
