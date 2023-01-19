@@ -8,8 +8,9 @@ from termcolor import colored, cprint
 import getpass
 import pwinput
 import bcrypt
-from game.py import game
-
+from game_state import Game
+import curses
+from curses import wrapper
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -23,13 +24,13 @@ SHEET = GSPREAD_CLIENT.open('project3-users')
 ERROR = ''
 GREEN_MESSAGE = ''
 LOGGED_IN = False
+users_credentials = SHEET.worksheet('users-database')
 
 def is_not_existing_user(input_username):
     """
     Checks if the user is new and gets called when the register option is sellected at the beginning of the programm
     """
-    users = SHEET.worksheet('users-database')
-    usernames = users.col_values(1)
+    usernames = users_credentials.col_values(1)
     is_new_user = True
     for user in usernames:
         if input_username == user:
@@ -59,7 +60,7 @@ def create_account():
         print('Create a password')
         salt = bcrypt.gensalt()
         credentials = [username_input, f'{create_password(salt)}', f"{salt}"]
-        users = SHEET.worksheet('users-database').append_row(credentials)
+        users = users_credentials.append_row(credentials)
         GREEN_MESSAGE = colored('succesfully registered', 'green', attrs=['reverse', 'blink'])
         os.system('clear')
         ERROR =''
@@ -94,15 +95,15 @@ def login():
     username_input = input('feed your username to me:\n')
     
     if is_not_existing_user(username_input) == False:
-        users = SHEET.worksheet('users-database')
+        users = users_credentials
         usernames = users.col_values(1)
         passwords = users.col_values(2)
         salts = users.col_values(3)
-        user_credentials = [[username, password, salt] for username, password, salt in zip(usernames,passwords, salts) if username_input == username][0]  
+        user_credentials = [[username, password, salt] for username, password, salt in 
+                            zip(usernames,passwords, salts) if username_input == username][0]  
         print('type your password:')
         encoded_salt = user_credentials[2][2:-1].encode('utf-8')          
         login_check_password(user_credentials[1], encoded_salt)
-        print('great Stuff you are now logged in') 
         GREEN_MESSAGE = colored('Successfuly logged in', 'green', attrs=['reverse', 'blink']) 
         ERROR =''
         os.system('clear')  
@@ -137,15 +138,40 @@ def auth():
         os.system('clear')
         auth()
         
-        
+def view_progress():
+    print(users_credentials.col_values(1))
+            
 def game():
     """
     will hold the typing game curses code
     """
     print("let's begin the fun")
-    wrapper(game.game_start)
+    game_state = Game('rocket_js_code.txt') 
+    wrapper(game_state.game_start)
     game.code_to_type_map()
-    
+
+
+def pre_start_game_menu():
+    """
+    Brings up a menu for starting the game , viewing the user's progress, log-out option 
+    """
+    global LOGGED_IN
+    print("1. Start typing") 
+    print("2. View your progress") 
+    print("3. Log Out")
+    user_selection_input = input('Type in one of the above options:')
+    if user_selection_input == '1':
+        game()
+    elif user_selection_input == '2':
+        view_progress()
+    elif user_selection_input == '3':
+        LOGGED_IN == False
+        auth()
+    else:
+        ERROR = colored('please type in one of the two digit-options in the menu', 'red', attrs=['reverse', 'blink'])
+        os.system('clear')
+        pre_start_game_menu()
+        
     
 def main():
     """
@@ -153,18 +179,17 @@ def main():
     """
     print(os.get_terminal_size()[0], os.get_terminal_size()[1])
     global LOGGED_IN
+    print(LOGGED_IN)
     if LOGGED_IN == False:
         print(ERROR)
         print('This is a typing game to enhance your programming typing skills:')
         auth()
     if LOGGED_IN == True:
-        os.system('clear')
+    #os.system('clear')
         print(GREEN_MESSAGE)
         print('This is a typing game to enhance your programming typing skills:')
-        game()
-        
-          
-print('\n\n\n')
+        pre_start_game_menu()
+
 main()
    
 

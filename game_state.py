@@ -25,19 +25,18 @@ class Game:
        
         
         stdscr.refresh()        
-        stdscr.addstr(1, 1, self.code_to_type)
+        stdscr.addstr(0, 0, self.code_to_type)
         stdscr.getch()
 
     def code_to_type_map(self):
+        """
+        Creates a map of the text to be typed by the user, that offers the right coordinates for highlighting and typing over the text
+        """
         with open(r"rocket_js_code.txt", 'r') as fp:
             for count, line in enumerate(fp):
                 pass
         print('Total Lines', count + 1)
         
-game = Game('rocket_js_code.txt')       
-wrapper(game.game_start)
-game.code_to_type_map()
-
 
 ##notes
         # curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
