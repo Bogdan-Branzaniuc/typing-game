@@ -6,6 +6,7 @@ from auth import Auth
 import colorama
 from colorama import Fore 
 from termcolor import colored, cprint
+
 # class Game
 # methods: read the source code and return it
 # create indentation map based on the text file
@@ -17,11 +18,10 @@ class Game:
     Contains all the game-functions
     uses auth object when logged out 
     """
-    def __init__(self, auth_object, users_db):
+    def __init__(self, users_db):
         self.rocket_file = open('rocket_js_code.txt')    
         self.code_to_type = self.rocket_file.read()
         self.rocket_file.close()
-        self.auth_object = auth_object
         self.users_credentials = users_db
         
 
@@ -52,7 +52,6 @@ class Game:
         runs home_menu after displaying the user's progress 
         """
         print(self.users_credentials.col_values(1))
-        self.home_menu()
             
 
     def home_menu(self):
@@ -62,23 +61,11 @@ class Game:
         View your progress
         Log Out
         """
-        print('\n\n')
         print("1. Start typing") 
         print("2. View your progress") 
         print("3. Log Out")
         user_selection_input = input('Type in one of the above options:')
-        if user_selection_input == '1':
-            self.game_start()
-        elif user_selection_input == '2':
-            self.view_progress()
-        elif user_selection_input == '3':
-            GREEN_MESSAGE = colored('Successfuly logged out', 'green', attrs=['reverse', 'blink']) 
-            print(GREEN_MESSAGE)
-            self.auth_object.auth()
-        else:
-            ERROR = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
-            print(ERROR)
-            self.home_menu()
+        return user_selection_input
 
 ##notes
         # curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
