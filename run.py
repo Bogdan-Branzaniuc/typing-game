@@ -46,7 +46,7 @@ def main():
         elif user_home_menu_choice == '2':
             game_state.view_progress()
         elif user_home_menu_choice == '3':
-            GREEN_MESSAGE = colored('Successfuly logged out', 'green', attrs=['reverse', 'blink']) 
+            GREEN_MESSAGE = colored('\n\nSuccessfuly logged out', 'green', attrs=['reverse', 'blink']) 
             print(GREEN_MESSAGE)
             auth_object.LOGGED_IN = False
         else:
@@ -54,9 +54,7 @@ def main():
             print(ERROR)
 
 while True:
-    print('\n')
-    main()
-    print('\n')
+    main()   
   
 
 

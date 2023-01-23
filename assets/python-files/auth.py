@@ -10,45 +10,57 @@ class Auth:
         self.users_credentials = users_db
 
     
-    def is_not_existing_user(self, input_username):
+    def is_existing_user(self, input_username):
         """
-        Checks if the user is new and gets called when the register option is sellected at the beginning of the programm
+        Checks if the user is new and prints an error if it isn't.
         """
         usernames = self.users_credentials.col_values(1)
-        is_new_user = True
+        is_current_user = False
         for user in usernames:
             if input_username == user:
-                is_new_user = False        
-        return is_new_user
-        
+                is_current_user = True  
+                ERROR = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
+                print(ERROR)      
+        return is_current_user
+    
+    def auth_field_min_3_char(self, user_input):
+        """
+        Checkes if an input field is at least 3 characters long and prints an error if it isn't 
+        """
+        if len(user_input) < 3:
+            ERROR = colored('this field should be at least 3 characters long', 'red', attrs=['reverse', 'blink'])
+            print(ERROR)
+            return False
+        else:
+            return True    
 
     def create_password(self, salt):
         """
         Will return a hashed password 
         """  
-        password = pwinput.pwinput(prompt=f"{colored('Password:', 'cyan')}", mask="*")        
-        encoded_psw = password.encode('utf-8')
-        hashed = bcrypt.hashpw(encoded_psw, salt)
-        return hashed
+        password = pwinput.pwinput(prompt=f"{colored('Password:', 'cyan')}", mask="*") 
+        if self.auth_field_min_3_char(password) == True:
+            encoded_psw = password.encode('utf-8')
+            hashed = bcrypt.hashpw(encoded_psw, salt)
+            return hashed
+        else:         
+            return self.create_password(salt)
 
         
     def create_account(self):
         """
         Gets called when creating a new account
-        uses is_not_existing_user function for the username duplicate red case
+        uses is_existing_user function for the username duplicate red case
         """
         username_input = input(f"{colored('Create a unique username:', 'cyan')}")
         
-        if self.is_not_existing_user(username_input) == True:
+        if self.is_existing_user(username_input) == False and self.auth_field_min_3_char(username_input) == True:
             salt = bcrypt.gensalt()
             credentials = [username_input, f'{self.create_password(salt)}', f"{salt}"]
             users = self.users_credentials.append_row(credentials)
             GREEN_MESSAGE = colored('succesfully registered', 'green', attrs=['reverse', 'blink'])
-            os.system('clear')
             print(GREEN_MESSAGE)       
         else:
-            ERROR = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
-            print(ERROR)
             self.create_account()  
 
             
@@ -68,7 +80,7 @@ class Auth:
         Gets called when logging into an existing account
         """   
         username_input = input(f"{colored('type your username in:', 'cyan')}")
-        if self.is_not_existing_user(username_input) == False:
+        if self.is_existing_user(username_input) == True:
             usernames = self.users_credentials.col_values(1)
             passwords = self.users_credentials.col_values(2)
             salts = self.users_credentials.col_values(3)
