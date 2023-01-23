@@ -10,17 +10,21 @@ class Auth:
         self.users_credentials = users_db
 
     
-    def is_existing_user(self, input_username):
+    def is_existing_user(self, input_username, register_or_login):
         """
         Checks if the user is new and prints an error if it isn't.
+        the register_or_login parameter checkes where the function is used,
+        so it only displays a registration error in a register context, while 
+        being used for a login functionality as well
         """
         usernames = self.users_credentials.col_values(1)
         is_current_user = False
         for user in usernames:
             if input_username == user:
                 is_current_user = True  
-                ERROR = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
-                print(ERROR)      
+                if register_or_login == 'register':
+                    ERROR = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
+                    print(ERROR)      
         return is_current_user
     
     def auth_field_min_3_char(self, user_input):
@@ -54,7 +58,7 @@ class Auth:
         """
         username_input = input(f"{colored('Create a unique username:', 'cyan')}")
         
-        if self.is_existing_user(username_input) == False and self.auth_field_min_3_char(username_input) == True:
+        if self.is_existing_user(username_input, 'register') == False and self.auth_field_min_3_char(username_input) == True:
             salt = bcrypt.gensalt()
             credentials = [username_input, f'{self.create_password(salt)}', f"{salt}"]
             users = self.users_credentials.append_row(credentials)
@@ -80,7 +84,7 @@ class Auth:
         Gets called when logging into an existing account
         """   
         username_input = input(f"{colored('type your username in:', 'cyan')}")
-        if self.is_existing_user(username_input) == True:
+        if self.is_existing_user(username_input, 'login') == True:
             usernames = self.users_credentials.col_values(1)
             passwords = self.users_credentials.col_values(2)
             salts = self.users_credentials.col_values(3)
