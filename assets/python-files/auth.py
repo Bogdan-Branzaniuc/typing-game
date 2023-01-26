@@ -26,6 +26,7 @@ class Auth:
                     ERROR = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
                     print(ERROR)      
         return is_current_user
+
     
     def auth_field_min_3_char(self, user_input):
         """
@@ -37,6 +38,7 @@ class Auth:
             return False
         else:
             return True    
+
 
     def create_password(self, salt):
         """
@@ -50,7 +52,7 @@ class Auth:
         else:         
             return self.create_password(salt)
 
-        
+
     def create_account(self):
         """
         Gets called when creating a new account

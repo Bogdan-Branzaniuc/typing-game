@@ -21,7 +21,7 @@ var changeState = function (state){
 			if (countdownNumber == 3) {
 				//can't wait
 			};
-
+			
 
 			if (countdownNumber <= 0) {
 				
@@ -45,3 +45,4 @@ var changeState = function (state){
 		}, 2000);
 	}
 }
+.

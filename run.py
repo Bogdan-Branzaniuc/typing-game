@@ -40,22 +40,12 @@ def main():
     if auth_object.LOGGED_IN == False:
         auth_object.auth()
     if auth_object.LOGGED_IN == True:
-        user_home_menu_choice = game_state.home_menu()
-        if user_home_menu_choice == '1':
-            game_state.game_start()
-        elif user_home_menu_choice == '2':
-            game_state.view_progress()
-        elif user_home_menu_choice == '3':
-            GREEN_MESSAGE = colored('\n\nSuccessfuly logged out', 'green', attrs=['reverse', 'blink']) 
-            print(GREEN_MESSAGE)
-            auth_object.LOGGED_IN = False
-        else:
-            ERROR = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
-            print(ERROR)
+        auth_object.LOGGED_IN = False if game_state.home_menu() == False else True
 
-while True:
-    main()   
-  
+# while True:
+#     main()   
+#game_state.code_to_type_map()
+game_state.game_start()
 
 
 
