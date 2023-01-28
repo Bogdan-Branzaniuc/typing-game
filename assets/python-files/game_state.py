@@ -32,19 +32,56 @@ class Game:
         stdscr = curses.initscr()
         curses.noecho()
         stdscr.refresh()        
-        stdscr.addstr(0, 0, self.code_to_type)
-
         
-        file_map = self.code_to_type_map()
-        for count_row in range(len(file_map)):
-            for char in file_map[count_row]['text']:
-                key_press = stdscr.getkey()
-                stdscr.addstr(count_row, char['x_coord'], key_press)
-                # if char['char'] = stdscr.getkey() yada yada xD 
+        self.input_evaluator()
+                 
         curses.endwin()
 
+    def input_evaluator(self):
+        """
+        evaluates the user key input and reveals the typed content or the original document according to the red-green cases
+        """
+        enter_key_unix_code = 10
+        enter_key_unix_code = 127
+        file_map = self.code_to_type_map()
+        
+        code_tiped=[]
+        count_row = 0
+        while True:
+            row_text = file_map[count_row]['text']
+            row_length = file_map[count_row]['length']
+            row_indentation = file_map[count_row]['indentation']
+            
+            stdscr.addstr(count_row, 0, row_indentation * "\t")
+            
+            char_index = 0
+            x_coord = stdscr.getyx()[1] 
+            while char_index < row_length:
+                self.render_document()
+                self.render_user_input()               
+                key_press = stdscr.getkey()
+                # is it the end
+                # is it the beggining
+                # is it correct   
+                stdscr.addstr(count_row, x_coord, key_press)
+                x_coord += 1
+                char_index += 1
+                stdscr.addstr(50, 10, f'{char_index}')
+            count_row += 1
 
+    def render_document(self):
+            '''
+            renders the part of the document that's left to be typed
+            '''
+            stdscr.addstr(0, 0, self.code_to_type)
 
+            
+    def render_user_input(self, input_tree):
+            ''' 
+            renders the completed part of the document that the user has typed
+            '''
+            # the reverse of map
+            
 
     def code_to_type_map(self):
         """
@@ -53,23 +90,15 @@ class Game:
         lines = []
         with open(r"rocket_js_code.txt", 'r') as fp:
             for count, line in enumerate(fp): 
-                number_of_spaces = line.count('\t') * 8
-                line = line.replace('\t','').replace('\n','')
-                lines.append({'text' : [{'char':char, 'x_coord':index + number_of_spaces} for char, index in zip(list(line), range(len(line)))],
+                number_of_spaces = line.count('\t')
+                line = line.replace('\t', '').replace('\n','')
+                lines.append({'text' : [char for char in list(line)],
                               'length' : len(line), 
                               'indentation' : number_of_spaces})
-                #spearate and make out the number of \t
-                #separate and store the \n at the end
-                #
-                #print(lines[count])
-        #print('Total Lines', count + 1)
-        #print(lines,'\n')
-        
+                #print(lines[count],'\n\n')
         return lines
-        
 
-
-
+    
     def view_progress(self):
         """
         will display the user's Dashboard 
