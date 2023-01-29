@@ -4,6 +4,7 @@ import os
 import colorama
 from colorama import Fore 
 from termcolor import colored, cprint
+
 class Auth:
     def __init__(self, users_db):
         self.LOGGED_IN = False

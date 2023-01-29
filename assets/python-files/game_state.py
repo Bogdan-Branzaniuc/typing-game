@@ -31,56 +31,58 @@ class Game:
         height = os.get_terminal_size()[1]
         stdscr = curses.initscr()
         curses.noecho()
-        stdscr.refresh()        
-        
-        self.input_evaluator()
-                 
+        stdscr.refresh()       
+        self.input_evaluator(stdscr)        
         curses.endwin()
 
-    def input_evaluator(self):
+    def input_evaluator(self, screen):
         """
-        evaluates the user key input and reveals the typed content or the original document according to the red-green cases
+        parses and evaluates the user input and sends the screen, file_map, and the user input to the render functions
         """
+        self.render_document(screen)
         enter_key_unix_code = 10
         enter_key_unix_code = 127
         file_map = self.code_to_type_map()
         
-        code_tiped=[]
+        code_tiped= []
         count_row = 0
+        
         while True:
-            row_text = file_map[count_row]['text']
-            row_length = file_map[count_row]['length']
-            row_indentation = file_map[count_row]['indentation']
-            
-            stdscr.addstr(count_row, 0, row_indentation * "\t")
-            
+            code_tiped.append([])
             char_index = 0
-            x_coord = stdscr.getyx()[1] 
+            row_length = file_map[count_row]['length']
             while char_index < row_length:
-                self.render_document()
-                self.render_user_input()               
-                key_press = stdscr.getkey()
+                key_press = screen.getkey()         
+                code_tiped[count_row].append(key_press)
+                            
+                              
                 # is it the end
                 # is it the beggining
                 # is it correct   
-                stdscr.addstr(count_row, x_coord, key_press)
-                x_coord += 1
+                screen.addstr(50, 10, f'{char_index}')
                 char_index += 1
-                stdscr.addstr(50, 10, f'{char_index}')
+                self.render_document(screen)
+                self.render_user_input(file_map, code_tiped, screen) 
             count_row += 1
 
-    def render_document(self):
+    def render_document(self, screen):
             '''
-            renders the part of the document that's left to be typed
+            renders the base document underneath the user input
             '''
-            stdscr.addstr(0, 0, self.code_to_type)
+            screen.addstr(0, 0, self.code_to_type)
 
             
-    def render_user_input(self, input_tree):
+    def render_user_input(self,file_map, input_tree, screen):
             ''' 
             renders the completed part of the document that the user has typed
             '''
-            # the reverse of map
+            count = 0
+            for file_row, input_row in zip(file_map, input_tree):
+                screen.addstr(count, file_row['indentation']*8, ''.join(input_row))
+                if len(input_row) == file_row['length']:
+                    input_row.append('\n')
+                count += 1
+            
             
 
     def code_to_type_map(self):
