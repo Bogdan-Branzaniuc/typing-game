@@ -39,10 +39,9 @@ var changeState = function (state){
 			//success
 			if (randomNumber > 1) {
 			changeState(4);
-			} else { 
+			} else {
 			changeState(5); //oh no!!
 			}
 		}, 2000);
 	}
 }
-.
