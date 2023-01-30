@@ -41,28 +41,50 @@ class Game:
         """
         self.render_document(screen)
         enter_key_unix_code = 10
-        enter_key_unix_code = 127
+        backspace_key_unix_code = 127
         file_map = self.code_to_type_map()
-        
+
         code_tiped= []
         count_row = 0
         
         while True:
             code_tiped.append([])
             char_index = 0
-            row_length = file_map[count_row]['length']
-            while char_index < row_length:
-                key_press = screen.getkey()         
-                code_tiped[count_row].append(key_press)
-                            
-                              
-                # is it the end
-                # is it the beggining
-                # is it correct   
+            
+            while char_index < file_map[count_row]['length']:
+                screen.addstr(50, 10, '  ')
                 screen.addstr(50, 10, f'{char_index}')
-                char_index += 1
-                self.render_document(screen)
-                self.render_user_input(file_map, code_tiped, screen) 
+                key_press = screen.getkey() 
+                if ord(key_press) == enter_key_unix_code:
+                    key_press = '\n'
+
+                if ord(key_press)== backspace_key_unix_code:
+                    if char_index == 0 and count_row > 0:
+                        code_tiped.pop()
+                        while  code_tiped[-1] == []:
+                            count_row -= 1
+                            code_tiped.pop()
+                        code_tiped[-1].pop()  
+                        count_row -= 1
+                        char_index = len(code_tiped[-1])
+                        self.render_document(screen)
+                        self.render_user_input(file_map, code_tiped, screen)
+                     
+                    elif char_index > 0:
+                        code_tiped[-1].pop() 
+                        char_index -= 1      
+                        self.render_document(screen)
+                        self.render_user_input(file_map, code_tiped, screen)
+                    
+                elif key_press == file_map[count_row]['text'][char_index]:    
+                    code_tiped[count_row].append(key_press)
+                    char_index += 1
+                    self.render_document(screen)
+                    self.render_user_input(file_map, code_tiped, screen)
+                    
+                
+                        
+                
             count_row += 1
 
     def render_document(self, screen):
@@ -76,11 +98,13 @@ class Game:
             ''' 
             renders the completed part of the document that the user has typed
             '''
+            curses.start_color()
+            curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
+            BLUE_AND_YELLOW = curses.color_pair(1)
             count = 0
             for file_row, input_row in zip(file_map, input_tree):
-                screen.addstr(count, file_row['indentation']*8, ''.join(input_row))
-                if len(input_row) == file_row['length']:
-                    input_row.append('\n')
+                screen.addstr(count, file_row['indentation']*8, ''.join(input_row), BLUE_AND_YELLOW)
+                    
                 count += 1
             
             
@@ -93,7 +117,9 @@ class Game:
         with open(r"rocket_js_code.txt", 'r') as fp:
             for count, line in enumerate(fp): 
                 number_of_spaces = line.count('\t')
-                line = line.replace('\t', '').replace('\n','')
+                line = line.replace('\t', '')
+                if line[0] == '\n':
+                    line = line.replace('\n', '')
                 lines.append({'text' : [char for char in list(line)],
                               'length' : len(line), 
                               'indentation' : number_of_spaces})
@@ -134,8 +160,8 @@ class Game:
             print(ERROR)
 
 ##notes
-        # curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
+       
+
         # curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        # BLUE_AND_YELLOW = curses.color_pair(1)
         # GREEN_AND_BLACK = curses.color_pair(2)
 
