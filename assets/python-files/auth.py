@@ -9,7 +9,7 @@ class Auth:
     def __init__(self, users_db):
         self.LOGGED_IN = False
         self.users_credentials = users_db
-
+        self.user_name = ''
     
     def is_existing_user(self, input_username, register_or_login):
         """
@@ -98,7 +98,8 @@ class Auth:
             GREEN_MESSAGE = colored('Successfuly logged in', 'green', attrs=['reverse', 'blink']) 
             os.system('clear')
             print(GREEN_MESSAGE) 
-            self.LOGGED_IN = True 
+            self.LOGGED_IN = True
+            self.user_name = username_input 
         else:
             ERROR = colored('this Username does not exist', 'red', attrs=['reverse', 'blink'])
             print(ERROR)

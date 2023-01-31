@@ -11,7 +11,8 @@ import pwinput
 
 
 sys.path.append(os.path.abspath("assets/python-files"))
-from game_state import Game
+from typing_state import Typing_state
+from game import Game
 from auth import Auth
 
 
@@ -26,9 +27,10 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('project3-users')
 
-users_db = SHEET.worksheet('users-database')  
+users_db = SHEET.worksheet('users-database')
+users_progress_db = SHEET.worksheet('users-progress')  
 auth_object = Auth(users_db)
-game_state = Game(users_db)  
+game = Game(users_db, Typing_state)  
        
 def main():
     """
@@ -39,13 +41,18 @@ def main():
     
     if auth_object.LOGGED_IN == False:
         auth_object.auth()
+        game.connected_user = auth_object.user_name
+        if game.connected_user not in users_progress_db.col_values(1):
+            users_progress_db.append_row([game.connected_user])
     if auth_object.LOGGED_IN == True:
-        auth_object.LOGGED_IN = False if game_state.home_menu() == False else True
+        if game.home_menu() == False:
+            auth_object.LOGGED_IN = False  
+        else:
+            auth_object.LOGGED_IN = True
+             
 
-# while True:
-#     main()   
-#game_state.code_to_type_map()
-game_state.game_start()
+while True:
+     main()   
 
 
 
@@ -57,8 +64,8 @@ game_state.game_start()
 # print(text)
 # print(Fore.RED + 'This text is red in color')
 
-# pygraph witht he dependencies / 3rd party loibraries
+# pygraph witht he dependencies / 3rd party libraries
 # technical design - flow 
-# user manual - bullte points
+# user manual - bullet points
 # code Institute python validator.
 # Unitesting 
