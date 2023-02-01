@@ -111,9 +111,7 @@ class Game:
             file_name='./assets/documents_to_type_on/rocket_js_code.txt'
             self.typing_state.file_name = file_name
             self.typing_state.game_start()
-            print(self.typing_state.typeable_characters)
             self.set_user_personal_best()
-
             
         else:
             ERROR = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
