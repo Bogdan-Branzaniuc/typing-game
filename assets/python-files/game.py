@@ -37,7 +37,7 @@ class Game:
         displays this informations to the user when a typing exercise is finished with a message 
         - new personal best if it is the case,  
         """
-        user_index = self.users_progress_db.col_values(1).index(self.connected_user,0,-1)
+        user_index = self.users_progress_db.col_values(1).index(self.connected_user)
         user_row_num = user_index + 1
         user_row = self.users_progress_db.row_values(user_index + 1)
 
