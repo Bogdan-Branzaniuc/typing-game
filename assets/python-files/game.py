@@ -91,12 +91,12 @@ class Game:
         elif user_home_menu_choice == '2':
             self.view_personal_best()
         elif user_home_menu_choice == '3':
-            GREEN_MESSAGE = colored('\n\nSuccessfuly logged out', 'green', attrs=['reverse', 'blink']) 
-            print(GREEN_MESSAGE)
+            green_message = colored('\n\nSuccessfuly logged out', 'green', attrs=['reverse', 'blink']) 
+            print(green_message)
             return False
         else:
-            ERROR = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
-            print(ERROR)
+            error = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
+            print(error)
 
 
     def choose_file_to_type(self):
@@ -104,15 +104,25 @@ class Game:
         displays a menu with the files available to train on 
         """
         print('\n\n')
-        print("1. Rocket launch JS")  
+        print("1. go back")
+        print("2. Rocket launch JS")  
+        print('You will exit the exercice by pressing: ', colored('esc', 'red'))
         
         user_choice = input(colored('choose a file to train on by typing the number:', 'yellow'))
-        if user_choice == '1':
+        if user_choice == '2':
             file_name='./assets/documents_to_type_on/rocket_js_code.txt'
             self.typing_state.file_name = file_name
             self.typing_state.game_start()
-            self.set_user_personal_best()
             
+            if self.typing_state.esc_pressed:
+                green_message = colored('\n\nyou exited the exercice', 'yellow', attrs=['reverse', 'blink']) 
+                print(green_message)
+            else:
+                self.set_user_personal_best()
+        elif user_choice == '1':
+            print('\n\n')
+            self.home_menu()    
         else:
-            ERROR = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
-            print(ERROR)
+            error = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
+            print(error)
+            self.choose_file_to_type()

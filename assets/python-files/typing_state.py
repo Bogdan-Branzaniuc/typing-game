@@ -19,8 +19,9 @@ class Typing_state():
         self.time = 0
         self.typeable_characters = 0
         self.typed_characters = 0
-
-
+        self.allowd_characters = []
+        self.esc_pressed = False
+        
     def game_start(self):
         """
         Initialisez the curses window where all the typing-related flow will run 
@@ -31,6 +32,7 @@ class Typing_state():
         stdscr = curses.initscr()
         
         curses.noecho()
+        stdscr.keypad(True)
         stdscr.refresh()
               
         self.input_evaluator(stdscr)        
@@ -44,10 +46,11 @@ class Typing_state():
         parses and evaluates the user input and sends the screen, file_map, and the user input to the render functions
         """
         self.render_document(screen)
-        enter_key_unix_code = 10
-        backspace_key_unix_code = 127
+        enter_key_code = '\n'
+        backspace_key_code = 'KEY_BACKSPACE'
+        esc_code = '^['
         file_map = self.code_to_type_map(self.file_name)
-
+        self.allowd_characters.append([enter_key_code, backspace_key_code, esc_code])
         code_typed= []
         wrong_typed= 0
         
@@ -55,15 +58,18 @@ class Typing_state():
         while count_row <= len(file_map)-1:
             code_typed.append([])
             char_index = 0
-            
+            self.esc_pressed = False
             while char_index < file_map[count_row]['length']:
                 screen.move(count_row, char_index + file_map[count_row]['indentation']*8)
-                self.typed_characters += 1
-                key_press = screen.getkey()
-                 
-                if ord(key_press) == enter_key_unix_code:
+                self.typed_characters += 1 
+                
+                key_press = screen.getkey()    
+                if key_press == esc_code:
+                    self.esc_pressed = True
+                    break
+                if key_press == enter_key_code:
                     key_press = '\n'     
-                if ord(key_press)== backspace_key_unix_code:
+                if key_press == backspace_key_code:
                     if wrong_typed > 0:
                         wrong_typed -= 1
                         code_typed[count_row].pop() 
@@ -83,22 +89,28 @@ class Typing_state():
                         code_typed[-1].pop() 
                         char_index -= 1      
                         self.render_document(screen)
-                        self.render_user_input(file_map, code_typed, wrong_typed, screen)
-                    
+                        self.render_user_input(file_map, code_typed, wrong_typed, screen) 
+                        
+                # elif key_press not in self.allowd_characters:
+                #     key_press = '~'
+                     
+                      
                 elif key_press == file_map[count_row]['text'][char_index] and wrong_typed == 0:    
                     code_typed[count_row].append(key_press)
                     char_index += 1
                     self.render_document(screen)
-                    self.render_user_input(file_map, code_typed, wrong_typed, screen)
-                                       
+                    self.render_user_input(file_map, code_typed, wrong_typed, screen)  
+                                     
                 elif key_press != file_map[count_row]['text'][char_index] and wrong_typed <= 5:  
                     wrong_typed += 1 
                     code_typed[count_row].append('X')
                     self.mistakes += 1
                     self.render_document(screen)
                     self.render_user_input(file_map, code_typed, wrong_typed, screen)
+                    
             count_row += 1
-       
+            if self.esc_pressed == True:
+                break
             
     def render_document(self, screen):
             '''
@@ -137,9 +149,13 @@ class Typing_state():
                 self.typeable_characters += len(line)
                 number_of_spaces = line.count('\t')
                 line = line.replace('\t', '')
+                for index, char in enumerate(line):
+                    if ord(line[index]) not in self.allowd_characters:
+                        self.allowd_characters.append(ord(line[index]))
                 if line[0] == '\n':
                     line = line.replace('\n', '')
                 lines.append({'text' : [char for char in list(line)],
                               'length' : len(line), 
                               'indentation' : number_of_spaces})  
+
         return lines
