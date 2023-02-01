@@ -7,7 +7,6 @@ var changeState = function (state){
 	countdownNumber = 10;
 	document.getElementById('countdown').innerHTML = countdownNumber;
 
-
 	//countdown
 	if (state == 2) {
 		timer = setInterval(function(){
@@ -45,3 +44,4 @@ var changeState = function (state){
 		}, 2000);
 	}
 }
+written by tanham (https://github.com/tanham/js-rocket/blob/master/js/rocket.js)

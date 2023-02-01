@@ -5,14 +5,8 @@ import os
 import colorama
 from colorama import Fore 
 from termcolor import colored, cprint
-
+import time
 from game import Game
-
-# class Game
-# methods: read the source code and return it
-# create indentation map based on the text file
-# use the map for the typing overlay method
-# create access to backspace, capsLock and shift keys 
 
 class Typing_state():
     """
@@ -23,20 +17,27 @@ class Typing_state():
 
         self.mistakes = 0
         self.time = 0
-        self.wpm = 0
+        self.typeable_characters = 0
+        self.typed_characters = 0
+
 
     def game_start(self):
         """
         Initialisez the curses window where all the typing-related flow will run 
         """
-        
+        start_cronomether = time.perf_counter()
         width = os.get_terminal_size()[0]
         height = os.get_terminal_size()[1]
         stdscr = curses.initscr()
+        
         curses.noecho()
-        stdscr.refresh()       
+        stdscr.refresh()
+              
         self.input_evaluator(stdscr)        
         curses.endwin()
+        end_cronomether = time.perf_counter()
+        self.time = round(end_cronomether - start_cronomether, 3) 
+
 
     def input_evaluator(self, screen):
         """
@@ -49,8 +50,6 @@ class Typing_state():
 
         code_typed= []
         wrong_typed= 0
-        typeable_characters = 0
-        typed_characters = 0
         
         count_row = 0       
         while count_row <= len(file_map)-1:
@@ -59,9 +58,9 @@ class Typing_state():
             
             while char_index < file_map[count_row]['length']:
                 screen.move(count_row, char_index + file_map[count_row]['indentation']*8)
+                self.typed_characters += 1
                 key_press = screen.getkey()
-                typed_characters += 1 
-                
+                 
                 if ord(key_press) == enter_key_unix_code:
                     key_press = '\n'     
                 if ord(key_press)== backspace_key_unix_code:
@@ -80,7 +79,6 @@ class Typing_state():
                         char_index = len(code_typed[-1])                             
                         self.render_document(screen)
                         self.render_user_input(file_map, code_typed, wrong_typed, screen)
- 
                     elif char_index > 0:
                         code_typed[-1].pop() 
                         char_index -= 1      
@@ -102,7 +100,6 @@ class Typing_state():
             count_row += 1
        
             
-
     def render_document(self, screen):
             '''
             renders the base document underneath the user input
@@ -137,11 +134,12 @@ class Typing_state():
         lines = []
         with open(file, 'r') as fp:
             for count, line in enumerate(fp): 
+                self.typeable_characters += len(line)
                 number_of_spaces = line.count('\t')
                 line = line.replace('\t', '')
                 if line[0] == '\n':
                     line = line.replace('\n', '')
                 lines.append({'text' : [char for char in list(line)],
                               'length' : len(line), 
-                              'indentation' : number_of_spaces})
+                              'indentation' : number_of_spaces})  
         return lines

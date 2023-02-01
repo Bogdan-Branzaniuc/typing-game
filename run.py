@@ -9,12 +9,10 @@ import getpass
 import bcrypt
 import pwinput
 
-
 sys.path.append(os.path.abspath("assets/python-files"))
 from typing_state import Typing_state
 from game import Game
 from auth import Auth
-
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -30,16 +28,15 @@ SHEET = GSPREAD_CLIENT.open('project3-users')
 users_db = SHEET.worksheet('users-database')
 users_progress_db = SHEET.worksheet('users-progress')  
 auth_object = Auth(users_db)
-game = Game(users_db, Typing_state)  
+game = Game(users_progress_db, Typing_state)  
        
 def main():
     """
     Builds the app environment and calls all the functions and messages
     """
-    title = colored('This is a typing game to enhance your programmer typing skills', 'yellow')
-    print(title)
-    
     if auth_object.LOGGED_IN == False:
+        title = colored('This is a typing game to enhance your programmer typing skills', 'yellow')
+        print(title)
         auth_object.auth()
         game.connected_user = auth_object.user_name
         if game.connected_user not in users_progress_db.col_values(1):
@@ -49,23 +46,7 @@ def main():
             auth_object.LOGGED_IN = False  
         else:
             auth_object.LOGGED_IN = True
-             
 
+        
 while True:
      main()   
-
-
-
-
-
-#NOTES
-
-# text = colored('Hello, World!', 'yellow', attrs=['reverse', 'blink'])
-# print(text)
-# print(Fore.RED + 'This text is red in color')
-
-# pygraph witht he dependencies / 3rd party libraries
-# technical design - flow 
-# user manual - bullet points
-# code Institute python validator.
-# Unitesting 
