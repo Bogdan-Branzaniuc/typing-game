@@ -9,7 +9,6 @@ import getpass
 import bcrypt
 import pwinput
 
-sys.path.append(os.path.abspath("assets/python-files"))
 from typing_state import Typing_state
 from game import Game
 from auth import Auth
@@ -34,18 +33,19 @@ def main():
     """
     Builds the app environment and calls all the functions and messages
     """
-    if auth_object.LOGGED_IN == False:
+    if auth_object.logged_in:
+        if game.home_menu() == False:
+            auth_object.logged_in = False  
+        else:
+            auth_object.logged_in = True
+    else:
         title = colored('This is a typing game to enhance your programmer typing skills', 'yellow')
         print(title)
         auth_object.auth()
         game.connected_user = auth_object.user_name
         if game.connected_user not in users_progress_db.col_values(1):
             users_progress_db.append_row([game.connected_user])
-    if auth_object.LOGGED_IN == True:
-        if game.home_menu() == False:
-            auth_object.LOGGED_IN = False  
-        else:
-            auth_object.LOGGED_IN = True
+    
 
         
 while True:

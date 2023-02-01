@@ -19,7 +19,6 @@ class Typing_state():
         self.time = 0
         self.typeable_characters = 0
         self.typed_characters = 0
-        self.allowd_characters = []
         self.esc_pressed = False
         
     def game_start(self):
@@ -46,29 +45,26 @@ class Typing_state():
         parses and evaluates the user input and sends the screen, file_map, and the user input to the render functions
         """
         self.render_document(screen)
-        enter_key_code = '\n'
         backspace_key_code = 'KEY_BACKSPACE'
-        esc_code = '^['
+        esc_code = chr(27)
         file_map = self.code_to_type_map(self.file_name)
-        self.allowd_characters.append([enter_key_code, backspace_key_code, esc_code])
+
         code_typed= []
         wrong_typed= 0
-        
         count_row = 0       
         while count_row <= len(file_map)-1:
             code_typed.append([])
             char_index = 0
-            self.esc_pressed = False
+            
             while char_index < file_map[count_row]['length']:
                 screen.move(count_row, char_index + file_map[count_row]['indentation']*8)
                 self.typed_characters += 1 
-                
-                key_press = screen.getkey()    
+                key_press = screen.getkey() 
+
                 if key_press == esc_code:
+                    screen.addstr(60,0,'works')
                     self.esc_pressed = True
-                    break
-                if key_press == enter_key_code:
-                    key_press = '\n'     
+                    break    
                 if key_press == backspace_key_code:
                     if wrong_typed > 0:
                         wrong_typed -= 1
@@ -90,11 +86,7 @@ class Typing_state():
                         char_index -= 1      
                         self.render_document(screen)
                         self.render_user_input(file_map, code_typed, wrong_typed, screen) 
-                        
-                # elif key_press not in self.allowd_characters:
-                #     key_press = '~'
-                     
-                      
+                                             
                 elif key_press == file_map[count_row]['text'][char_index] and wrong_typed == 0:    
                     code_typed[count_row].append(key_press)
                     char_index += 1
@@ -106,37 +98,39 @@ class Typing_state():
                     code_typed[count_row].append('X')
                     self.mistakes += 1
                     self.render_document(screen)
-                    self.render_user_input(file_map, code_typed, wrong_typed, screen)
+                    self.render_user_input(file_map, code_typed, wrong_typed, screen) 
                     
-            count_row += 1
             if self.esc_pressed == True:
-                break
+                break          
+            count_row += 1
+            
+            
             
     def render_document(self, screen):
-            '''
-            renders the base document underneath the user input
-            '''
-            file = open(self.file_name)    
-            code_to_type = file.read()
-            file.close()
-            screen.addstr(0, 0, code_to_type)
+        '''
+        renders the base document underneath the user input
+        '''
+        file = open(self.file_name)    
+        code_to_type = file.read()
+        file.close()
+        screen.addstr(0, 0, code_to_type)
 
             
     def render_user_input(self,file_map, input_tree,wrong_typed, screen):
-            ''' 
-            renders the completed part of the document that the user has typed
-            '''
-            curses.start_color()
-            curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
-            curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
-            GREEN = curses.color_pair(1)
-            RED = curses.color_pair(2) 
-            color = RED if wrong_typed > 0 else GREEN
-            count = 0
-            for file_row, input_row in zip(file_map, input_tree):    
-                screen.addstr(count, file_row['indentation']*8 + len(file_row['text']), '      ')
-                screen.addstr(count, file_row['indentation']*8, ''.join(input_row), color)
-                count += 1
+        ''' 
+        renders the completed part of the document that the user has typed
+        '''
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
+        GREEN = curses.color_pair(1)
+        RED = curses.color_pair(2) 
+        color = RED if wrong_typed > 0 else GREEN
+        count = 0
+        for file_row, input_row in zip(file_map, input_tree):    
+            screen.addstr(count, file_row['indentation']*8 + len(file_row['text']), '      ')
+            screen.addstr(count, file_row['indentation']*8, ''.join(input_row), color)
+            count += 1
                 
 
     def code_to_type_map(self, file):
@@ -149,9 +143,6 @@ class Typing_state():
                 self.typeable_characters += len(line)
                 number_of_spaces = line.count('\t')
                 line = line.replace('\t', '')
-                for index, char in enumerate(line):
-                    if ord(line[index]) not in self.allowd_characters:
-                        self.allowd_characters.append(ord(line[index]))
                 if line[0] == '\n':
                     line = line.replace('\n', '')
                 lines.append({'text' : [char for char in list(line)],

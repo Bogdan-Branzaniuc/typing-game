@@ -104,22 +104,22 @@ class Game:
         displays a menu with the files available to train on 
         """
         print('\n\n')
-        print("1. go back")
-        print("2. Rocket launch JS")  
-        print('You will exit the exercice by pressing: ', colored('esc', 'red'))
+        print("0. go back")
+        print("1. Rocket launch JS")  
+        print('once the game starts you will exit the exercice by pressing: ', colored('esc', 'red'))
         
-        user_choice = input(colored('choose a file to train on by typing the number:', 'yellow'))
-        if user_choice == '2':
+        user_choice = input(colored('choose a file to train on or go back:', 'yellow'))
+        if user_choice == '1':
             file_name='./assets/documents_to_type_on/rocket_js_code.txt'
             self.typing_state.file_name = file_name
             self.typing_state.game_start()
-            
+            print(self.typing_state.esc_pressed)
             if self.typing_state.esc_pressed:
-                green_message = colored('\n\nyou exited the exercice', 'yellow', attrs=['reverse', 'blink']) 
+                green_message = colored('\n\n you exited the exercice', 'yellow', attrs=['reverse', 'blink']) 
                 print(green_message)
             else:
                 self.set_user_personal_best()
-        elif user_choice == '1':
+        elif user_choice == '0':
             print('\n\n')
             self.home_menu()    
         else:
