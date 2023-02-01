@@ -17,7 +17,7 @@ class Game:
         will display the user's Dashboard 
         runs home_menu after displaying the user's progress 
         """
-        user_index = self.users_progress_db.col_values(1).index(self.connected_user,0,-1)
+        user_index = self.users_progress_db.col_values(1).index(self.connected_user)
         user_row_num = user_index + 1
         user_row = self.users_progress_db.row_values(user_index + 1)
         print('\n')
