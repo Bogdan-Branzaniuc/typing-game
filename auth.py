@@ -62,18 +62,34 @@ class Auth:
         Gets called when creating a new account
         uses is_existing_user function for the username duplicate red case
         """
-        username_input = input(f"{colored('Create a unique username:', 'cyan')}")
-
+        input_message = (
+            colored("you can type ", "blue")
+            + colored("exit ", "red")
+            + colored("into any field to go back \n", "blue")
+        )
+        input_message += colored('Create a unique username:', 'cyan')
+        username_input = input(input_message)
+        if username_input == 'exit':
+            self.auth()
+            return False
         if (
             self.is_existing_user(username_input, "register") == False
             and self.auth_field_min_3_char(username_input) == True
         ):
             salt = bcrypt.gensalt()
-            credentials = [username_input, f"{self.create_password(salt)}", f"{salt}"]
-            users = self.users_credentials.append_row(credentials)
-            green_messaage = colored("succesfully registered", "green")
-            os.system('clear')
-            print(green_messaage)
+            created_password = f"{self.create_password(salt)}"
+            exit = 'exit'
+            encoded_exit = exit.encode("utf-8")
+            exit_hashed = bcrypt.hashpw(encoded_exit, salt)
+            if str(created_password) == str(exit_hashed):
+                self.auth()
+                return False
+            else:
+                credentials = [username_input, created_password, f"{salt}"]
+                users = self.users_credentials.append_row(credentials)
+                green_messaage = colored("succesfully registered", "green")
+                os.system('clear')
+                print(green_messaage)
         else:
             self.create_account()
 
@@ -100,9 +116,9 @@ class Auth:
         Gets called when logging into an existing account
         """
         input_message = (
-            colored("type ", "cyan")
+            colored("you can type ", "blue")
             + colored("exit ", "red")
-            + colored("into any field to go back \n", "cyan")
+            + colored("into any field to go back \n", "blue")
         )
         input_message += colored("username:", "cyan")
         username_input = input(input_message)
@@ -141,6 +157,7 @@ class Auth:
         print("2. Register")
         user_auth_input_instruction = colored(
             "type one of the command numbers above in order to proceed \n", "cyan"
+            
         )
         user_auth_input = input(f"{user_auth_input_instruction}")
 
@@ -151,3 +168,5 @@ class Auth:
         else:
             error = colored("please type in one of the options in the menu", "red")
             print(error)
+            self.auth()
+            return False

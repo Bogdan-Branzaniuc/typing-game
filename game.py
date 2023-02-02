@@ -137,6 +137,7 @@ class Game:
             error = colored("please type in one of the options in the menu", "red")
             os.system('clear')
             print(error)
+            self.home_menu()
             return False
 
     def choose_file_to_type(self):
