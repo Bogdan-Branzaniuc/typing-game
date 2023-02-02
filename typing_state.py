@@ -4,7 +4,7 @@ from curses import wrapper
 import os
 import colorama
 from colorama import Fore 
-from termcolor import colored, cprint
+from termcolor import colored
 import time
 from game import Game
 

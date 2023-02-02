@@ -3,7 +3,7 @@ import bcrypt
 import os
 import colorama
 from colorama import Fore 
-from termcolor import colored, cprint
+from termcolor import colored
 
 MINIMUM_AUTH_INPUT = 3
 
@@ -27,7 +27,7 @@ class Auth:
             if input_username == user:
                 is_current_user = True  
                 if register_or_login == 'register':
-                    error = colored('this Username allready exists', 'red', attrs=['reverse', 'blink'])
+                    error = colored('this Username allready exists', 'red')
                     print(error)      
         return is_current_user
 
@@ -37,7 +37,7 @@ class Auth:
         Checkes if an input field is at least 3 characters long and prints an error if it isn't 
         """
         if len(user_input) < min_len:
-            error = colored('this field should be at least 3 characters long', 'red', attrs=['reverse', 'blink'])
+            error = colored('this field should be at least 3 characters long', 'red')
             print(error)
             return False
         else:
@@ -67,8 +67,8 @@ class Auth:
         if self.is_existing_user(username_input, 'register') == False and self.auth_field_min_3_char(username_input) == True:
             salt = bcrypt.gensalt()
             credentials = [username_input, f'{self.create_password(salt)}', f"{salt}"]
-            users = self.users_credentials.append_row(credentials)
-            green_messaage = colored('succesfully registered', 'green', attrs=['reverse', 'blink'])
+            users  = self.users_credentials.append_row(credentials)
+            green_messaage = colored('succesfully registered', 'green')
             print(green_messaage)       
         else:
             self.create_account()  
@@ -80,7 +80,7 @@ class Auth:
         """
         user_input_password =  f'{self.create_password(user_salt)}'
         if user_input_password != db_user_password:
-            error = colored('wrong password', 'red', attrs=['reverse', 'blink'])
+            error = colored('wrong password', 'red')
             print(error)
             self.login_check_password(db_user_password, user_salt) 
             
@@ -89,7 +89,7 @@ class Auth:
         """
         Gets called when logging into an existing account
         """
-        input_message = colored('type ' , 'cyan') + colored('exit ', 'red') + colored('to go back \n' , 'cyan')   
+        input_message = colored('type ', 'cyan') + colored('exit ', 'red') + colored('to go back \n', 'cyan')   
         input_message += colored('username:' , 'cyan') 
         username_input = input(input_message)
         if username_input == 'exit':
@@ -102,13 +102,13 @@ class Auth:
                                 zip(usernames,passwords, salts) if username_input == username][0]  
             encoded_salt = user_credentials[2][2:-1].encode('utf-8')          
             self.login_check_password(user_credentials[1], encoded_salt)
-            green_messaage = colored('Successfuly logged in', 'green', attrs=['reverse', 'blink']) 
+            green_messaage = colored('Successfuly logged in', 'green') 
             os.system('clear')
             print(green_messaage) 
             self.logged_in = True
             self.user_name = username_input 
         else:
-            error = colored('this Username does not exist', 'red', attrs=['reverse', 'blink'])
+            error = colored('this Username does not exist', 'red')
             print(error)
             self.login() 
 
@@ -130,5 +130,5 @@ class Auth:
         elif user_auth_input == '1':
             self.login()     
         else:
-            error = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink']) 
+            error = colored('please type in one of the options in the menu', 'red') 
             print(error)

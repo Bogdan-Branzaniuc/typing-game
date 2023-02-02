@@ -22,14 +22,16 @@ class Game:
         user_row = self.users_progress_db.row_values(user_index + 1)
         print('\n')
         if len(user_row) < 5:
-            print(colored(f'Hi {self.connected_user}! you do not have a record yet, start a game first', 'yellow', attrs=['reverse', 'blink']))
+            no_record_message = f'Hi {self.connected_user}! you do not have a record yet, start a game first'
+            print(colored(no_record_message, 'yellow'))
         else:
-            print(colored('Your personal best is:', 'yellow', attrs=['reverse', 'blink']))
+            print(colored('Your personal best is:', 'yellow'))
             print('mistakes:', colored(f'{user_row[1]}','green'))
             print('time:', colored(f'{user_row[2]}','green'), 'seconds')
-            print('typed characters:', colored(f'{user_row[3]}','green'), 'VS typeable characters:', colored(f'{user_row[4]}','green'))
+            print('typed characters:', colored(f'{user_row[3]}','green'), 'VS typeable characters:',
+                  colored(f'{user_row[4]}','green'))
         print('\n')
-
+ 
            
     def set_user_personal_best(self):
         """
@@ -61,12 +63,12 @@ class Game:
 
             if self.typing_state.mistakes < int(user_row[1]):
                 self.users_progress_db.update(f'B{user_row_num}', self.typing_state.mistakes)
-                print(colored(f'Great! new personal best on mistakes', 'green', attrs=['reverse', 'blink']))
+                print(colored(f'Great! new personal best on mistakes', 'green'))
             if self.typing_state.time < float(user_row[2]):
                 self.users_progress_db.update(f'C{user_row_num}', self.typing_state.time)
-                print(colored(f'Great! new personal best on time', 'green', attrs=['reverse', 'blink']))
+                print(colored(f'Great! new personal best on time', 'green'))
             if self.typing_state.typed_characters < int(user_row[3]):
-                print(colored(f'Great! new personal best on typed characters', 'green', attrs=['reverse', 'blink']))
+                print(colored(f'Great! new personal best on typed characters', 'green'))
                 self.users_progress_db.update(f'E{user_row_num}', self.typing_state.typed_characters)
                 
             self.users_progress_db.update(f'D{user_row_num}', self.typing_state.typeable_characters)
@@ -80,6 +82,7 @@ class Game:
         View your progress
         Log Out
         """
+        print('\n')
         print(colored('Home menu:', 'blue', attrs=['reverse']))
         print("1. Start typing") 
         print("2. View your progress") 
@@ -91,11 +94,11 @@ class Game:
         elif user_home_menu_choice == '2':
             self.view_personal_best()
         elif user_home_menu_choice == '3':
-            green_message = colored('\n\nSuccessfuly logged out', 'green', attrs=['reverse', 'blink']) 
+            green_message = colored('\n\nSuccessfuly logged out', 'green') 
             print(green_message)
             return False
         else:
-            error = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
+            error = colored('please type in one of the options in the menu', 'red')
             print(error)
 
 
@@ -115,7 +118,7 @@ class Game:
             self.typing_state.game_start()
             print(self.typing_state.esc_pressed)
             if self.typing_state.esc_pressed:
-                green_message = colored('\n\n you exited the exercice', 'yellow', attrs=['reverse', 'blink']) 
+                green_message = colored('\n\n you exited the exercice', 'yellow') 
                 print(green_message)
             else:
                 self.set_user_personal_best()
@@ -123,6 +126,6 @@ class Game:
             print('\n\n')
             self.home_menu()    
         else:
-            error = colored('please type in one of the options in the menu', 'red', attrs=['reverse', 'blink'])
+            error = colored('please type in one of the options in the menu', 'red')
             print(error)
             self.choose_file_to_type()
