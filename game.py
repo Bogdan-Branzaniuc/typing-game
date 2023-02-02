@@ -2,6 +2,7 @@ import colorama
 from colorama import Fore
 from termcolor import colored, cprint
 import os
+import time
 
 
 class Game:
@@ -136,12 +137,12 @@ class Game:
             error = colored("please type in one of the options in the menu", "red")
             os.system('clear')
             print(error)
+            return False
 
     def choose_file_to_type(self):
         """
         displays a menu with the files available to train on
         """
-        print("\n\n")
         title = '''
                 __                             .___      
    ____   _____/  |_  _______  ____ _____    __| _/__.__.
@@ -174,8 +175,10 @@ class Game:
                 
         elif user_choice == "0":
             os.system('clear')
+            return False
             self.home_menu()
         else:
             error = colored("please type in one of the options in the menu", "red")
+            os.system('clear')
             print(error)
             self.choose_file_to_type()

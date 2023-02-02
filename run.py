@@ -2,13 +2,14 @@ import gspread
 from google.oauth2.service_account import Credentials
 import colorama
 import os
+import time
 from colorama import Fore
 from termcolor import colored
 
 from typing_state import Typing_state
 from game import Game
 from auth import Auth
-os.system('clear')
+
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
@@ -36,7 +37,7 @@ def main():
         else:
             auth_object.logged_in = True
     else:
-        message = """
+        title = """
  ____  __.                _____         .__   __                
 |    |/ _|____ ___.__.   /     \   ____ |  |_/  |_  ___________ 
 |      <_/ __ <   |  |  /  \ /  \_/ __ \|  |\   __\/ __ \_  __ \ 
@@ -44,7 +45,7 @@ def main():
 |____|__ \___  > ____| \____|__  /\___  >____/__|  \___  >__|   
         \/   \/\/              \/     \/               \/       
 """
-        print(colored(message,'green'))
+        print(colored(title,'green'))
         title_text = "This is a programm to enhance your typing skills"
         title = colored(title_text, "yellow")
         print(title)
@@ -56,3 +57,4 @@ def main():
 
 while True:
     main()
+    

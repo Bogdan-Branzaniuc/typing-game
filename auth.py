@@ -48,7 +48,8 @@ class Auth:
         """
         Will return a hashed password
         """
-        password = pwinput.pwinput(prompt=f"{colored('Password:', 'cyan')}", mask="*")
+        password = pwinput.pwinput(prompt=f"{colored('Password:', 'cyan')}", mask="*")  
+       
         if self.auth_field_min_3_char(password) == True:
             encoded_psw = password.encode("utf-8")
             hashed = bcrypt.hashpw(encoded_psw, salt)
@@ -79,9 +80,17 @@ class Auth:
     def login_check_password(self, db_user_password, user_salt):
         """
         Gets the user password and salt from the database and compares it to the user input for validation
+        handles the exit option if tiped in the password field
         """
         user_input_password = f"{self.create_password(user_salt)}"
-        if user_input_password != db_user_password:
+
+        exit = 'exit'
+        encoded_exit = exit.encode("utf-8")
+        exit_hashed = bcrypt.hashpw(encoded_exit, user_salt)
+        
+        if str(user_input_password) == str(exit_hashed):
+            self.auth() 
+        elif user_input_password != db_user_password:
             error = colored("wrong password", "red")
             print(error)
             self.login_check_password(db_user_password, user_salt)
@@ -93,7 +102,7 @@ class Auth:
         input_message = (
             colored("type ", "cyan")
             + colored("exit ", "red")
-            + colored("to go back \n", "cyan")
+            + colored("into any field to go back \n", "cyan")
         )
         input_message += colored("username:", "cyan")
         username_input = input(input_message)
@@ -141,5 +150,4 @@ class Auth:
             self.login()
         else:
             error = colored("please type in one of the options in the menu", "red")
-            os.system('clear')
             print(error)
