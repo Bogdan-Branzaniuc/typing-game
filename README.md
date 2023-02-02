@@ -62,6 +62,7 @@ doesn't tell you if you do the same mistake and what finger is more suitable to 
     - typing_state.py, 
     - game.py, 
     - auth.py
+ 3. all code was formatted with [black playground](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ABlADtdAD2IimZxl1N_W1ktIvcnCRyz_JxMldeGP3FkYC4l_yCiOWfL-S4QrUMyitkDP-9TiRumVRC_cm_kkqQAAADz8W8IWfenugABV2bVuq1xH7bzfQEAAAAABFla)
 
 ## Bugs
 

@@ -30,6 +30,7 @@ class Auth:
                 if register_or_login == "register":
                     error = colored("this Username allready exists", "red")
                     print(error)
+                    
         return is_current_user
 
     def auth_field_min_3_char(self, user_input, min_len=MINIMUM_AUTH_INPUT):
@@ -70,6 +71,7 @@ class Auth:
             credentials = [username_input, f"{self.create_password(salt)}", f"{salt}"]
             users = self.users_credentials.append_row(credentials)
             green_messaage = colored("succesfully registered", "green")
+            os.system('clear')
             print(green_messaage)
         else:
             self.create_account()
@@ -113,6 +115,7 @@ class Auth:
             print(green_messaage)
             self.logged_in = True
             self.user_name = username_input
+            
         else:
             error = colored("this Username does not exist", "red")
             print(error)
@@ -138,4 +141,5 @@ class Auth:
             self.login()
         else:
             error = colored("please type in one of the options in the menu", "red")
+            os.system('clear')
             print(error)

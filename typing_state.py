@@ -65,7 +65,6 @@ class Typing_state:
                 key_press = screen.getkey()
 
                 if key_press == esc_code:
-                    screen.addstr(60, 0, "works")
                     self.esc_pressed = True
                     break
                 if key_press == backspace_key_code:
