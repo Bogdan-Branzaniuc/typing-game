@@ -24,16 +24,17 @@
     2. [modules and Tools](#python-requirements-and-modules)
 5.  [Features](#features)
 6.  [Following Features](#following-features)
-7.  [Testing](#testing)
+7.  [Following Features](#following-features)
+8.  [Testing](#testing)
     1. [Development testing](#development-testing)
     2. [Formating](#formating)
     3. [Python Validation](#python-validation)
-8.  [Bugs](#bugs)
+9.  [Bugs](#bugs)
     1. [Visual Bugs](#visual-bug)
     2. [Fixed Bugs](#fixed-bugs)
-9.  [Deployment](#deployment)
-10. [Credits](#credits)
-10. [Acknowledgements](#acknowledgements)
+10.  [Deployment](#deployment)
+11. [Credits](#credits)
+12. [Acknowledgements](#acknowledgements)
 
 ## Project Mission
 - ## The goal of the project is to provide a programming driven typing gamified exercise.
