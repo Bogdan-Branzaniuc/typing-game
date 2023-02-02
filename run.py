@@ -1,7 +1,7 @@
-import gspread 
+import gspread
 from google.oauth2.service_account import Credentials
 import colorama
-from colorama import Fore 
+from colorama import Fore
 from termcolor import colored
 
 from typing_state import Typing_state
@@ -11,18 +11,18 @@ from auth import Auth
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/drive"
-    ]
+    "https://www.googleapis.com/auth/drive",
+]
 
-CREDS = Credentials.from_service_account_file('creds.json')
+CREDS = Credentials.from_service_account_file("creds.json")
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-SHEET = GSPREAD_CLIENT.open('project3-users')
+SHEET = GSPREAD_CLIENT.open("project3-users")
 
-users_db = SHEET.worksheet('users-database')
-users_progress_db = SHEET.worksheet('users-progress')  
+users_db = SHEET.worksheet("users-database")
+users_progress_db = SHEET.worksheet("users-progress")
 auth_object = Auth(users_db)
-game = Game(users_progress_db, Typing_state)  
+game = Game(users_progress_db, Typing_state)
 
 
 def main():
@@ -31,17 +31,18 @@ def main():
     """
     if auth_object.logged_in:
         if game.home_menu() == False:
-            auth_object.logged_in = False  
+            auth_object.logged_in = False
         else:
             auth_object.logged_in = True
     else:
-        title_text = 'This is a programm to enhance your typing skills'
-        title = colored(title_text, 'yellow')
+        title_text = "This is a programm to enhance your typing skills"
+        title = colored(title_text, "yellow")
         print(title)
         auth_object.auth()
         game.connected_user = auth_object.user_name
         if game.connected_user not in users_progress_db.col_values(1):
             users_progress_db.append_row([game.connected_user])
-          
+
+
 while True:
     main()

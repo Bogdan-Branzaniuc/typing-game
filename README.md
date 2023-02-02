@@ -35,8 +35,10 @@
 10. Acknowledgements
 
 ## Project Mission
-- User requirements
-- Developer Goal
+- ## User requirements
+           sadfasdfsadf
+- ## Developer Goal
+           asdfasdfsadf
 
 ## Technical Design
     
@@ -54,7 +56,12 @@ doesn't tell you if you do the same mistake and what finger is more suitable to 
 
 ## Testing
  1. during development of the three Classes, their methods were runned and tested independently, that way the end-points of each Object remained clear untill the final testing of the overall project. 
- 2. [Pyton code validator]() 
+ 2. before and after each commit the functionality worked upon was tested for the expected result.
+ 2. [Pyton code validator](https://www.pythonchecker.com/) was used. an excelent result was given for all of the 4 python files of the programm: 
+    - run.py, 
+    - typing_state.py, 
+    - game.py, 
+    - auth.py
 
 ## Bugs
 
