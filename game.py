@@ -32,12 +32,24 @@ class Game:
                   colored(f'{user_row[4]}','green'))
         print('\n')
  
-           
+
+    def print_user_results(self):
+        '''
+        prints the user results, it get's called only in the set_user_personal_best, after the game-session has ended  
+        '''
+        print('\n\n')
+        print(f'{self.typing_state.mistakes} mistakes')
+        print(f'{self.typing_state.time} seconds')
+        print(f'typeable characters: {self.typing_state.typeable_characters} ')
+        print(f'typed characters: {self.typing_state.typed_characters} ')
+        print('\n\n')
+        
     def set_user_personal_best(self):
         """
-        sets the user mistakes, time and words per minute (a word = 5 chars) in the user_database
+        sets the user result in the user_database if there was no record before
         displays this informations to the user when a typing exercise is finished with a message 
-        - new personal best if it is the case,  
+        new personal best message is displayed if it is the case for each of the first three values: 
+        typed characters, time, nr. of mistakes  
         """
         user_index = self.users_progress_db.col_values(1).index(self.connected_user)
         user_row_num = user_index + 1
@@ -48,18 +60,9 @@ class Game:
             self.users_progress_db.update(f'C{user_row_num}', self.typing_state.time)
             self.users_progress_db.update(f'E{user_row_num}', self.typing_state.typed_characters)
             self.users_progress_db.update(f'D{user_row_num}', self.typing_state.typeable_characters)
-            print('\n\n')
-            print(f'{self.typing_state.mistakes} mistakes')
-            print(f'{self.typing_state.time} seconds')
-            print(f'typeable characters: {self.typing_state.typeable_characters} ')
-            print(f'typed characters: {self.typing_state.typed_characters} ')
-            print('\n\n')
+            self.print_user_results()
         else:
-            print('\n\n')
-            print(f'{self.typing_state.mistakes} mistakes')
-            print(f'{self.typing_state.time} seconds')
-            print(f'typeable characters: {self.typing_state.typeable_characters} ')
-            print(f'typed characters: {self.typing_state.typed_characters} ')
+            self.print_user_results()
 
             if self.typing_state.mistakes < int(user_row[1]):
                 self.users_progress_db.update(f'B{user_row_num}', self.typing_state.mistakes)
