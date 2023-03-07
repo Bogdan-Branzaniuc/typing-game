@@ -167,6 +167,7 @@ class Game:
             os.system('clear')
             file_name = "./assets/documents_to_type_on/rocket_js_code.txt"
             self.typing_state.file_name = file_name
+            self.typing_state.esc_pressed=False
             self.typing_state.game_start()
             if self.typing_state.esc_pressed:
                 green_message = colored("you exited the exercice", "yellow")
